@@ -42,7 +42,7 @@ vfs_dialog_tab::vfs_dialog_tab(vfs_settings_info settingsInfo, std::shared_ptr<g
 	QPushButton* button_remove_dir = new QPushButton(QStringLiteral("-"));
 	button_remove_dir->setToolTip(tr("Remove directory"));
 	button_remove_dir->setFixedWidth(button_remove_dir->sizeHint().height()); // Make button square
-	button_remove_dir->setEnabled(false);
+	button_remove_dir->setEnabled(selected_item && m_dir_dist->count() > 1);
 	connect(button_remove_dir, &QAbstractButton::clicked, this, &vfs_dialog_tab::RemoveDirectory);
 
 	QHBoxLayout* selected_config_layout = new QHBoxLayout;
@@ -63,7 +63,7 @@ vfs_dialog_tab::vfs_dialog_tab(vfs_settings_info settingsInfo, std::shared_ptr<g
 	{
 		QListWidgetItem* item = m_dir_dist->item(row);
 		m_selected_config_label->setText((item && !item->text().isEmpty()) ? item->text() : EmptyPath);
-		button_remove_dir->setEnabled(item && row > 0);
+		button_remove_dir->setEnabled(item && m_dir_dist->count() > 1);
 	});
 }
 
@@ -102,7 +102,7 @@ void vfs_dialog_tab::AddNewDirectory() const
 void vfs_dialog_tab::RemoveDirectory() const
 {
 	const int row = m_dir_dist->currentRow();
-	if (row > 0)
+	if (m_dir_dist->count() > 1)
 	{
 		QListWidgetItem* item = m_dir_dist->item(row);
 		delete item;
